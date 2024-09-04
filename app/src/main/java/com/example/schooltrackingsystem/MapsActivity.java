@@ -1,8 +1,17 @@
 package com.example.schooltrackingsystem;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import android.os.Bundle;
 
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.Manifest;
+
+
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -14,7 +23,11 @@ import com.example.schooltrackingsystem.databinding.ActivityMapsBinding;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-private ActivityMapsBinding binding;
+    private GeofencingClient geofencingClient;
+
+    private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
+
+    private ActivityMapsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +40,8 @@ private ActivityMapsBinding binding;
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        geofencingClient = LocationServices.getGeofencingClient(this);
     }
 
     /**
@@ -46,6 +61,46 @@ private ActivityMapsBinding binding;
         LatLng durban = new LatLng(-29.8587, 31.0218);
         mMap.addMarker(new MarkerOptions().position(durban).title("Marker in Durban"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(durban));
+
+        enableUserLocation();
+    }
+
+    private void enableUserLocation(){
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED){
+            mMap.setMyLocationEnabled(true);
+        }else{
+            //Ask for permission
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)){
+                ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
+            }else{
+                ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
+            // We need to show user a dialog for displaying why the permission is needed and then ask for the permission..
+        }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == FINE_LOCATION_ACCESS_REQUEST_CODE) {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // We have the permission
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    try {
+                        // Enable the user's location on the map
+                        mMap.setMyLocationEnabled(true);
+                    } catch (SecurityException e) {
+                        // Handle the potential SecurityException
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                // Permission was denied, handle appropriately
+            }
+        }
     }
 
 }
