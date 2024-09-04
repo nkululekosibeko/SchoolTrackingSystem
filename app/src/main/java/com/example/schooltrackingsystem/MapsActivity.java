@@ -42,9 +42,10 @@ private ActivityMapsBinding binding;
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        // Add a marker in Durban, South Africa, and move the camera
+        LatLng durban = new LatLng(-29.8587, 31.0218);
+        mMap.addMarker(new MarkerOptions().position(durban).title("Marker in Durban"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(durban));
     }
+
 }
