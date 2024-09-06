@@ -19,11 +19,20 @@ public class GeofenceHelper extends ContextWrapper {
     }
 
     public GeofencingRequest getGeofencingRequest(Geofence geofence){
-        return null;
+        return new GeofencingRequest.Builder()
+                .addGeofence(geofence)
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                .build();
     }
 
     public Geofence getGeofence(String ID, LatLng latLng, float radius, int transitionTypes){
-        return null;
+        return new Geofence.Builder()
+                .setCircularRegion(latLng.latitude, latLng.longitude,radius)
+                .setRequestId(ID)
+                .setTransitionTypes(transitionTypes)
+                .setLoiteringDelay(5000)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build();
     }
 
     public PendingIntent getPendingIntent(){
