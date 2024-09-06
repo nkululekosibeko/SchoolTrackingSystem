@@ -3,6 +3,7 @@ package com.example.schooltrackingsystem;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
@@ -26,6 +27,12 @@ public class GeofenceHelper extends ContextWrapper {
     }
 
     public PendingIntent getPendingIntent(){
+        if (pendingIntent != null){
+            return pendingIntent;
+        }
+        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         return pendingIntent;
     }
 }
