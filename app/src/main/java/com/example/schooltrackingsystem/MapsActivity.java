@@ -101,6 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapLongClick(@NonNull LatLng latLng) {
+        mMap.clear();
         addMarker(latLng);
         addCircle(latLng, GEOFENCE_RADIUS );
     }
